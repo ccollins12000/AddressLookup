@@ -1,3 +1,6 @@
+import requests
+import json
+
 class Geocoder:
     """An object for searching for companies using google's custom search engine API
 
@@ -48,3 +51,53 @@ class Geocoder:
         """
         with open(write_path + '/' + str(self.address_id) + '.json', 'w') as f:
             f.write(self._response.text)
+
+
+class AddressResult:
+    def __init__(self, response):
+        self._response = response
+        self._location = response['results'][0]['locations'][0]
+
+    @property
+    def street_address(self):
+        return self._location.get('street')
+
+    @property
+    def neighborhood(self):
+        return self._location.get('adminArea6')
+
+    @property
+    def city(self):
+        return self._location.get('adminArea5')
+
+    @property
+    def county(self):
+        self._location.get('adminArea4')
+
+    @property
+    def state(self):
+        self._location.get('adminArea3')
+
+    @property
+    def country(self):
+        self._location.get('adminArea1')
+
+    @property
+    def latitude(self):
+        return self._location['latLng']['lat']
+
+    @property
+    def longitude(self):
+        return self._location['latLng']['lng']
+
+    @property
+    def geocode_quality(self):
+        self._location.get('geocodeQuality')
+
+    @property
+    def geocode_quality_code(self):
+        self._location.get('geocodeQualityCode')
+
+    @property
+    def side_of_street(self):
+        self._location.get('sideOfStreet')
