@@ -21,7 +21,6 @@ class Geocoder:
         self._api_key = api_key
         self.company_id = 0
         self.address = None
-        self.address_id = None
         self.result = None
 
     def search(self, address):
@@ -30,6 +29,9 @@ class Geocoder:
         Args:
             address (str): The full address of the company
             company_id (int): The id of the company
+
+        Raises:
+            Exception: If an invalid MapQuest key is provided
         """
         self.address = address
 
@@ -38,6 +40,9 @@ class Geocoder:
         search_api_url = 'http://www.mapquestapi.com/geocoding/v1/address'
         params = {'key': self._api_key, 'location': self.address}
         self._response = self._session.get(search_api_url, params=params)
+
+        if self._response.text == 'The AppKey submitted with this request is invalid.':
+            raise Exception('An invalid api key was provided for MapQuest')
 
         # Parse results
         results_data = json.loads(self._response.text)
@@ -49,7 +54,7 @@ class Geocoder:
         Args:
             The path to write the file to
         """
-        with open(write_path + '/' + str(self.address_id) + '.json', 'w') as f:
+        with open(write_path + '.json', 'w') as f:
             f.write(self._response.text)
 
 
