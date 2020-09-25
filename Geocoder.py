@@ -20,7 +20,6 @@ class Geocoder:
         self._session = requests.session()
         self._response = None
         self._api_key = api_key
-        self.company_id = 0
         self.address = None
         self.result = None
 
@@ -77,7 +76,7 @@ class AddressResult:
     """
     def __init__(self, response):
         self._response = response
-        self._location = response['results'][0]['locations'][0]
+        self._location = response.get('results', [{}])[0].get('locations', [{}])[0]
 
     @property
     def street_address(self):
@@ -105,11 +104,11 @@ class AddressResult:
 
     @property
     def latitude(self):
-        return self._location['latLng']['lat']
+        return self._location.get('latLng', {}).get('lat')
 
     @property
     def longitude(self):
-        return self._location['latLng']['lng']
+        return self._location.get('latLng', {}).get('lng')
 
     @property
     def geocode_quality(self):
@@ -122,3 +121,4 @@ class AddressResult:
     @property
     def side_of_street(self):
         self._location.get('sideOfStreet')
+
