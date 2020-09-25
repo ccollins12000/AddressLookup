@@ -1,5 +1,6 @@
 import requests
 import json
+import QualityCode
 
 class Geocoder:
     """An object for searching for companies using google's custom search engine API
@@ -112,7 +113,7 @@ class AddressResult:
 
     @property
     def geocode_quality(self):
-        self._location.get('geocodeQuality')
+        return QualityCode.GeocodeQuality(self._location.get('geocodeQualityCode'))
 
     @property
     def geocode_quality_code(self):
