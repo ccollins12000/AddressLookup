@@ -1,4 +1,16 @@
-# https://developer.mapquest.com/documentation/geocoding-api/quality-codes/
+"""A module for parsing a geocode quality code from a MapQuest request
+
+For the reference around geocode quality codes view https://developer.mapquest.com/documentation/geocoding-api/quality-codes/
+
+Attributes:
+    granularity_lookup (dict):
+        Give a description for and long name for each granularity code. The granularity code is the first two characters
+        of the geocode quality code
+    confidence_lookup (dict):
+        Give a confidence code to see the description and additional considerations. The confidence codes are contained
+        in the last three characters of the geocoding quality code.
+"""
+
 granularity_lookup = {
     'P1': {
         'Name': 'POINT',
@@ -95,7 +107,15 @@ confidence_lookup = {
 
 
 class GeocodeQuality:
+    """An object for translating and storing a MapQuest geocode quality code.
+
+    """
     def __init__(self, quality_code):
+        """The constructor for the geocode quality code
+
+        Args:
+            quality_code (str): 5 character quality code from the MapQuest geocode request.
+        """
         self._quality_code = quality_code
 
     def __str__(self):
