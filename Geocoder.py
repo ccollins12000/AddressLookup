@@ -41,7 +41,7 @@ class Geocoder:
 
         # Parse results
         results_data = json.loads(self._response.text)
-        self.result = MapQuestLocation(results_data)
+        self.result = AddressResult(results_data)
 
     def write_results(self, write_path):
         """Writes the json response of the google search to a text file
@@ -54,6 +54,21 @@ class Geocoder:
 
 
 class AddressResult:
+    """An address object
+
+    Attributes:
+        street_address (str): The street address. Example: 1 Main St
+        neighborhood (str): The neighborhood of the address result
+        city (str): The city
+        county (str): The county
+        state (str): The state
+        country (str): The country
+        latitude (str): The latitude of the address
+        longitude (str): The longitude of the address
+        geocode_quality (str): The quality of the result found
+        geocode_quality_code (str): The quality of the result found
+        side_of_street (str): which side of the street the result is on
+    """
     def __init__(self, response):
         self._response = response
         self._location = response['results'][0]['locations'][0]
