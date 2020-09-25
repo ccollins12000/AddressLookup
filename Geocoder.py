@@ -112,7 +112,7 @@ class AddressResult:
 
     @property
     def geocode_quality(self):
-        return QualityCode.GeocodeQuality(self._location.get('geocodeQualityCode'))
+        return QualityCode.GeocodeQuality(self._location.get('geocodeQualityCode', 'A1XXX'))
 
     @property
     def geocode_quality_code(self):
