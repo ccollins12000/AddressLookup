@@ -92,15 +92,15 @@ class AddressResult:
 
     @property
     def county(self):
-        self._location.get('adminArea4')
+        return self._location.get('adminArea4')
 
     @property
     def state(self):
-        self._location.get('adminArea3')
+        return self._location.get('adminArea3')
 
     @property
     def country(self):
-        self._location.get('adminArea1')
+        return self._location.get('adminArea1')
 
     @property
     def latitude(self):
@@ -116,9 +116,9 @@ class AddressResult:
 
     @property
     def geocode_quality_code(self):
-        self._location.get('geocodeQualityCode')
+        return self._location.get('geocodeQualityCode')
 
     @property
     def side_of_street(self):
-        self._location.get('sideOfStreet')
+        return self._location.get('sideOfStreet')
 
