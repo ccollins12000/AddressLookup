@@ -1,4 +1,5 @@
 import requests
+import json
 
 class Geocoder:
     """An object for searching for companies using google's custom search engine API
@@ -34,9 +35,13 @@ class Geocoder:
         params = {'key': self._api_key, 'q': self.address}
         self._response = self._session.get(search_api_url, params=params)
 
+
         # Parse results
-        #results_data = json.loads(self._response.text)
-        #self.result = AddressResult(results_data)
+        results_data = json.loads(self._response.text)
+        if results_data.get('statusCode') != 200:
+            raise Exception(results_data.get('statusDescription', 'The request returned a non-success status.'))
+
+        self.result = AddressResult(results_data)
 
     def write_results(self, write_path):
         """Writes the json response of the google search to a text file
@@ -47,27 +52,82 @@ class Geocoder:
         with open(write_path + '.json', 'w') as f:
             f.write(self._response.text)
 
+
+class AddressResult:
+    """An address object
+
+    Attributes:
+        street_address (str): The street address. Example: 1 Main St
+        neighborhood (str): The neighborhood of the address result
+        city (str): The city
+        county (str): The county
+        state (str): The state
+        country (str): The country
+        latitude (str): The latitude of the address
+        longitude (str): The longitude of the address
+        geocode_quality (str): The quality of the result found
+        geocode_quality_code (str): The quality of the result found
+        side_of_street (str): which side of the street the result is on
+    """
+    def __init__(self, response):
+        self._response = response
+        self._location = response.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('address', {})
+        self._coordinates = response.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('geocodePoints', [{}])[0].get('coordinates', [None, None])
+
+    @property
+    def street_address(self):
+        return self._location.get('addressLine')
+
+    @property
+    def zip_code(self):
+        return self._.get('postalCode')
+
+    @property
+    def neighborhood(self):
+        return self._location.get('adminArea6')
+
+    @property
+    def city(self):
+        return self._location.get('locality')
+
+    @property
+    def county(self):
+        return self._location.get('adminDistrict2')
+
+    @property
+    def state(self):
+        return self._location.get('adminDistrict')
+
+    @property
+    def country(self):
+        return self._location.get('countryRegion')
+
+    @property
+    def latitude(self):
+        return self._coordinates[0]
+
+    @property
+    def longitude(self):
+        return self._coordinates[1]
+
+    #@property
+    #def geocode_quality(self):
+    #    return QualityCode.GeocodeQuality(self._location.get('geocodeQualityCode', 'A1XXX'))
+
+    #@property
+    #def geocode_quality_code(self):
+    #    return self._location.get('geocodeQualityCode')
+
+    def __str__(self):
+        return self._location.get('formattedAddress')
+
+
 if __name__ == "__main__":
     api_key = input('Enter the bing api key: ')
     write_path = input('Enter an output path for the response: ')
     geocoder = Geocoder(api_key)
     geocoder.search('paris')
     geocoder.write_results(write_path)
-
-    #rjson.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('address', {})
-    #.get('addressLine') #street address
-    #.get('adminDistrict') #State
-    #.get('adminDistrict2') #County
-    #.get('countryRegion') #country
-    #.get('formattedAddress') # full address
-    #.get('locality') #city
-    #.get('postalCode') #zip code
-    #.get('formattedAddress') #full address
-    #rjson.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('geocodePoints', [{}])[0].get('coordinates', [None, None])
-
-    #unauthorized
-    #rjson.get('authenticationResultCode', '') == "InvalidCredentials"
-
-    #if rjson.get('statusCode') != 200:
-    #   raise Exception(rjson.get('statusDescription', 'The request returned a non-success status.')
-#http://dev.virtualearth.net/REST/v1/Locations?q=100%20Main%20St.%20Somewhere,%20WA%2098001&key={BingMapsAPIKey}
+    print(geocoder.result)
+    print(geocoder.result.longitude)
+    print(geocoder.result.latitude)
