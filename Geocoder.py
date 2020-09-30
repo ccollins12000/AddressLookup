@@ -3,12 +3,11 @@ import json
 import QualityCode
 
 class Geocoder:
-    """An object for searching for companies using google's custom search engine API
+    """An object for searching for companies using MapQuests's custom search engine API
 
     Attributes:
-        company (str): The name of the company
-        company_id (int): The id of the company
-        results (obj): A list of search results
+        result (obj): Address result from search method
+        address (str): The last address searched for
     """
     def __init__(self, api_key):
         """The constructor for the company searcher
@@ -24,14 +23,13 @@ class Geocoder:
         self.result = None
 
     def search(self, address):
-        """Searches for a company
+        """Searches for an address
 
         Args:
-            address (str): The full address of the company
-            company_id (int): The id of the company
+            address (str): The full address
 
         Raises:
-            Exception: If an invalid MapQuest key is provided
+            Exception: If an invalid MapQuest key is provided or if MapQuest response contains an error message
         """
         self.address = address
 
@@ -52,7 +50,7 @@ class Geocoder:
         self.result = AddressResult(results_data)
 
     def write_results(self, write_path):
-        """Writes the json response of the google search to a text file
+        """Writes the json response of the geocode search to a text file
 
         Args:
             The path to write the file to

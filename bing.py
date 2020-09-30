@@ -2,12 +2,12 @@ import requests
 import json
 
 class Geocoder:
-    """An object for searching for companies using google's custom search engine API
+    """An object for searching for companies using bings's custom search engine API
 
     Attributes:
     """
     def __init__(self, api_key):
-        """The constructor for the company searcher
+        """The constructor for the address geocoder utilizing bing
 
         Args:
             api_key (str): The secret key for accessing the api
@@ -20,10 +20,10 @@ class Geocoder:
         self.result = None
 
     def search(self, address):
-        """Searches for a company
+        """Searches for an address
 
         Args:
-            address (str): The full address of the company
+            address (str): The address to search for
         Raises:
             Exception: If an invalid Bing key is provided
         """
