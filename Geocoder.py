@@ -46,6 +46,9 @@ class Geocoder:
 
         # Parse results
         results_data = json.loads(self._response.text)
+        if results_data.get('info', {}).get('statuscode') != 0:
+            raise Exception(results_data.get('info', {}).get('messages', 'There was an error with the MapQuest request'))
+
         self.result = AddressResult(results_data)
 
     def write_results(self, write_path):
@@ -122,3 +125,10 @@ class AddressResult:
     def side_of_street(self):
         return self._location.get('sideOfStreet')
 
+
+if __name__ == "__main__":
+    api_key = input('Enter the MapQuest key: ')
+    write_path = input('Enter an output path for the response: ')
+    geocoder = Geocoder(api_key)
+    geocoder.search('Paris')
+    geocoder.write_results(write_path)

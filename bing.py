@@ -51,12 +51,23 @@ if __name__ == "__main__":
     api_key = input('Enter the bing api key: ')
     write_path = input('Enter an output path for the response: ')
     geocoder = Geocoder(api_key)
-    geocoder.search('1 Microsoft Way, Redmond Washington')
+    geocoder.search('paris')
     geocoder.write_results(write_path)
 
+    #rjson.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('address', {})
+    #.get('addressLine') #street address
+    #.get('adminDistrict') #State
+    #.get('adminDistrict2') #County
+    #.get('countryRegion') #country
+    #.get('formattedAddress') # full address
+    #.get('locality') #city
+    #.get('postalCode') #zip code
+    #.get('formattedAddress') #full address
+    #rjson.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('geocodePoints', [{}])[0].get('coordinates', [None, None])
 
+    #unauthorized
+    #rjson.get('authenticationResultCode', '') == "InvalidCredentials"
 
-
-
-
+    #if rjson.get('statusCode') != 200:
+    #   raise Exception(rjson.get('statusDescription', 'The request returned a non-success status.')
 #http://dev.virtualearth.net/REST/v1/Locations?q=100%20Main%20St.%20Somewhere,%20WA%2098001&key={BingMapsAPIKey}
