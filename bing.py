@@ -110,13 +110,13 @@ class AddressResult:
     def longitude(self):
         return self._coordinates[1]
 
-    #@property
-    #def geocode_quality(self):
-    #    return QualityCode.GeocodeQuality(self._location.get('geocodeQualityCode', 'A1XXX'))
+    @property
+    def geocode_quality(self):
+        return self._response.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('confidence', '')
 
-    #@property
-    #def geocode_quality_code(self):
-    #    return self._location.get('geocodeQualityCode')
+    @property
+    def geocode_quality_code(self):
+        return str(self._response.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('matchCodes', str([])))
 
     def __str__(self):
         return self._location.get('formattedAddress')
@@ -126,8 +126,10 @@ if __name__ == "__main__":
     api_key = input('Enter the bing api key: ')
     write_path = input('Enter an output path for the response: ')
     geocoder = Geocoder(api_key)
-    geocoder.search('paris')
+    geocoder.search('81 1st st N, Paris')
     geocoder.write_results(write_path)
     print(geocoder.result)
     print(geocoder.result.longitude)
     print(geocoder.result.latitude)
+    print(geocoder.result.geocode_quality)
+    print(geocoder.result.geocode_quality_code)
