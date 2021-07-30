@@ -1,6 +1,8 @@
 import requests
 import json
 
+
+
 class Geocoder:
     """An object for searching for companies using bings's custom search engine API
 
@@ -80,7 +82,7 @@ class AddressResult:
 
     @property
     def zip_code(self):
-        return self._.get('postalCode')
+        return self._location.get('postalCode')
 
     @property
     def neighborhood(self):
