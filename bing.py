@@ -19,14 +19,15 @@ class RouteRetriever:
         self.route = None
 
     def calculate_route(self, start_location, end_location, **kwargs):
-        """Finds the route between two address
+        """Finds the route between two address. Note this object is only setup to handle two waypoints.
+        The _response attribute can be accessed to work with the raw response from bing for additional functionality
         
         Args:
             start_location (str): The address of the location to start at
             end_location (str): The address of the location to end at
             
             See https://docs.microsoft.com/en-us/bingmaps/rest-services/routes/calculate-a-route
-            for full list of additional parameters and details that can be passed to request.
+            for full list of additional parameters and details that can be passed to request. 
             Some possible additional parameters:
                 
                 optmz (optimize) (str): 
@@ -116,6 +117,71 @@ class Geocoder:
         with open(write_path + '.json', 'w') as f:
             f.write(self._response.text)
 
+
+class RouteResult:
+    """A route object, which contains the details on how to navigate from one address to another. The object will only return
+    the first result set.
+
+    Attributes:
+        distance_unit (str): The unit of distance used (km or mile)
+        duration_unit (str): The unit of duraction used (seconds)
+        distance (str): The total distance of the route
+        duration (str): The total duration of the route
+        duration_traffic (str): The total duration of the route with traffic data
+        mode (str): The mode of travel required for the route
+        start_location (obj): The address that bing utilized as the start address
+        end_location (obj): The address that bing utilized as the end address
+        print_instructions (str): A step by step print out of instructions to travel the route
+
+    """
+    def __init__(self, response):
+        self._response = response
+        self._results = self._response.get('resourceSets', [{}])[0].get('resources', [{}])
+        
+    @property
+    def distance_unit(self):
+        return self._results[0].get('distanceUnit')
+        
+    @property
+    def duration_unit(self):
+        return self._results[0].get('durationUnit')
+        
+    @property
+    def distance(self):
+        return self._results[0].get('travelDistance')
+    
+    @property
+    def duration(self):
+        return self._results[0].get('travelDuration')
+    
+    @property
+    def duration_traffic(self):
+        return self._results[0].get('travelDurationTraffic')
+    
+    @property
+    def mode(self):
+        return self._results[0].get('travelMode')
+    
+    @property
+    def start_location(self):
+        return AddressResult(self._results[0].get('routeLegs', [{}])[0].get('endLocation', {})).get('formattedAddress')
+        
+    @property
+    def end_location(self):
+        return AddressResult(self._results[0].get('routeLegs', [{}])[0].get('startLocation', {})).get('formattedAddress')
+        
+    @property
+    def print_instructions(self):
+        all_instructions = ''
+        
+        #Each segement between two waypoints requested is considered a route leg
+        for routeLeg in self._results[0].get('routeLegs', [{}]):
+            #each route leg has multiple steps
+            for direction in routeLeg.get('itineraryItems',[{}]):
+                all_instructions += "(" + str(direction.get('travelDistance',{})) + ") "
+                all_instructions += direction.get('instruction',{}).get('text') + '\n'
+        
+        return all_instructions
 
 class AddressResult:
     """An address object
