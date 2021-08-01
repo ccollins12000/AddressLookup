@@ -25,7 +25,27 @@ class RouteRetriever:
             start_location (str): The address of the location to start at
             end_location (str): The address of the location to end at
             
+            See https://docs.microsoft.com/en-us/bingmaps/rest-services/routes/calculate-a-route
+            for full list of additional parameters and details that can be passed to request.
+            Some possible additional parameters:
+                
+                optmz (optimize) (str): 
+                    - distance: The route is calculated to minimize the distance. Traffic information is not used.
+                    - time [default]: The route is calculated to minimize the time. Traffic information is not used.
+                    - timeWithTraffic: The route is calculated to minimize the time and uses current traffic information.
+                    - timeAvoidClosure: The route is calculated to minimize the time and avoid road closures. Traffic not used
+                
+                du (distanceUnit) (str): mi or km (specifies what unit the distance is returned in)
         
+                dt (dateTime) (str): Specifies the time to use for calculating the route Example: dateTime=03/01/2011 05:42:00
+                                Use with tt parameter
+                
+                tt (timeType) (str):
+                    - Arrival: The dateTime parameter contains the desired arrival time for a transit request.
+                    - Departure: The dateTime parameter contains the desired departure time for a transit request.
+                    - LastAvailable: The dateTime parameter contains the latest departure time available for a transit request.
+                
+                travelMode (str): Specifies the mode od travel for the route. Can be Driving, Transit or Walking.
         """
         search_api_url = 'http://dev.virtualearth.net/REST/v1/Routes'
         params = {'key': self._api_key, 
@@ -168,6 +188,7 @@ class AddressResult:
 
 if __name__ == "__main__":
     api_key = input('Enter the bing api key: ')
+    write_path = input('Enter the output path ')
     #write_path = input('Enter an output path for the response: ')
     #geocoder = Geocoder(api_key)
     #geocoder.search('81 1st st N, Paris')
@@ -181,4 +202,6 @@ if __name__ == "__main__":
     end = 'Minneapolis, MN'
     route_retriever = RouteRetriever(api_key)
     route_retriever.calculate_route(start, end, optmz='distance')
-    print(route_retriever._response.text)
+    text = json.dumps(json.loads(route_retriever._response.text), indent=2)
+    with open(write_path + '.json', 'w') as f:
+            f.write(text)
