@@ -1,10 +1,48 @@
 import requests
 import json
 
+class RouteRetriever:
+    """An object for retrieving the route between two locations using Bing's custom search API"""
+
+    def __init__(self, api_key):
+        """The constructor for the route retriever utilizing bing
+        
+        Args:
+            api_key (str): The secret key for accessing the api
+        
+        """
+        self._session = requests.session()
+        self._response = None
+        self._api_key = api_key
+        self.start_location = None
+        self.end_location = None
+        self.route = None
+
+    def calculate_route(self, start_location, end_location):
+        """Finds the route between two address
+        
+        Args:
+            start_location (str): The address of the location to start at
+            end_location (str): The address of the location to end at
+        
+        """
+        search_api_url = 'http://dev.virtualearth.net/REST/v1/Routes'
+        params = {'key': self._api_key, 
+                  'wp.0':start_location, 
+                  'wp.1':end_location
+                  }
+        self._response = self._session.get(search_api_url, params=params)
+        
+        #Parse Results
+        results_data = json.loads(self._response.text)
+        if results_data.get('statusCode') != 200:
+            raise Exception(results_data.get('statusDescription', 'The request returned a non-success status.'))
+    
+
 
 
 class Geocoder:
-    """An object for searching for companies using bings's custom search engine API
+    """An object for searching for companies using Bing's custom search engine API
 
     Attributes:
     """
@@ -126,12 +164,17 @@ class AddressResult:
 
 if __name__ == "__main__":
     api_key = input('Enter the bing api key: ')
-    write_path = input('Enter an output path for the response: ')
-    geocoder = Geocoder(api_key)
-    geocoder.search('81 1st st N, Paris')
-    geocoder.write_results(write_path)
-    print(geocoder.result)
-    print(geocoder.result.longitude)
-    print(geocoder.result.latitude)
-    print(geocoder.result.geocode_quality)
-    print(geocoder.result.geocode_quality_code)
+    #write_path = input('Enter an output path for the response: ')
+    #geocoder = Geocoder(api_key)
+    #geocoder.search('81 1st st N, Paris')
+    #geocoder.write_results(write_path)
+    #print(geocoder.result)
+    #print(geocoder.result.longitude)
+    #print(geocoder.result.latitude)
+    #print(geocoder.result.geocode_quality)
+    #print(geocoder.result.geocode_quality_code)
+    start = 'Saint Paul, MN'
+    end = 'Minneapolis, MN'
+    route_retriever = RouteRetriever(api_key)
+    route_retriever.calculate_route(start, end)
+    print(route_retriever._response.text)
