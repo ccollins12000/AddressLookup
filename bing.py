@@ -63,7 +63,7 @@ class RouteRetriever:
         if results_data.get('statusCode') != 200:
             raise Exception(results_data.get('statusDescription', 'The request returned a non-success status.'))
     
-
+        self.route = RouteResult(results_data)
 
 
 class Geocoder:
@@ -106,7 +106,7 @@ class Geocoder:
         if results_data.get('statusCode') != 200:
             raise Exception(results_data.get('statusDescription', 'The request returned a non-success status.'))
 
-        self.result = AddressResult(results_data)
+        self.result = AddressResult(results_data.get('resourceSets', [{}])[0].get('resources', [{}])[0])
 
     def write_results(self, write_path):
         """Writes the json response of the google search to a text file
@@ -129,8 +129,8 @@ class RouteResult:
         duration (str): The total duration of the route
         duration_traffic (str): The total duration of the route with traffic data
         mode (str): The mode of travel required for the route
-        start_location (obj): The address that bing utilized as the start address
-        end_location (obj): The address that bing utilized as the end address
+        start_location (obj): The address that bing utilized as the start address as an AddressObject
+        end_location (obj): The address that bing utilized as the end address as an AddressObject
         print_instructions (str): A step by step print out of instructions to travel the route
 
     """
@@ -164,11 +164,11 @@ class RouteResult:
     
     @property
     def start_location(self):
-        return AddressResult(self._results[0].get('routeLegs', [{}])[0].get('endLocation', {})).get('formattedAddress')
+        return AddressResult(self._results[0].get('routeLegs', [{}])[0].get('endLocation', {}))
         
     @property
     def end_location(self):
-        return AddressResult(self._results[0].get('routeLegs', [{}])[0].get('startLocation', {})).get('formattedAddress')
+        return AddressResult(self._results[0].get('routeLegs', [{}])[0].get('startLocation', {}))
         
     @property
     def print_instructions(self):
@@ -201,8 +201,8 @@ class AddressResult:
     """
     def __init__(self, response):
         self._response = response
-        self._location = response.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('address', {})
-        self._coordinates = response.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('geocodePoints', [{}])[0].get('coordinates', [None, None])
+        self._location = response.get('address', {})
+        self._coordinates = response.get('geocodePoints', [{}])[0].get('coordinates', [None, None])
 
     @property
     def street_address(self):
@@ -242,11 +242,11 @@ class AddressResult:
 
     @property
     def geocode_quality(self):
-        return self._response.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('confidence', '')
+        return self._response.get('confidence', '')
 
     @property
     def geocode_quality_code(self):
-        return str(self._response.get('resourceSets', [{}])[0].get('resources', [{}])[0].get('matchCodes', str([])))
+        return str(self._response.get('matchCodes', str([])))
 
     def __str__(self):
         return self._location.get('formattedAddress')
@@ -255,19 +255,40 @@ class AddressResult:
 if __name__ == "__main__":
     api_key = input('Enter the bing api key: ')
     write_path = input('Enter the output path ')
+    
     #write_path = input('Enter an output path for the response: ')
-    #geocoder = Geocoder(api_key)
-    #geocoder.search('81 1st st N, Paris')
-    #geocoder.write_results(write_path)
-    #print(geocoder.result)
-    #print(geocoder.result.longitude)
-    #print(geocoder.result.latitude)
-    #print(geocoder.result.geocode_quality)
-    #print(geocoder.result.geocode_quality_code)
+    geocoder = Geocoder(api_key)
+    geocoder.search('81 1st st N, Paris')
+    geocoder.write_results(write_path)
+    print(geocoder.result)
+    print(geocoder.result.longitude)
+    print(geocoder.result.latitude)
+    print(geocoder.result.geocode_quality)
+    print(geocoder.result.country)
+    print(geocoder.result.state)
+    print(geocoder.result.county)
+    print(geocoder.result.city)
+    print(geocoder.result.neighborhood)
+    print(geocoder.result.zip_code)
+    print(geocoder.result.street_address)
+    print(str(geocoder.result))
     start = 'Saint Paul, MN'
     end = 'Minneapolis, MN'
     route_retriever = RouteRetriever(api_key)
     route_retriever.calculate_route(start, end, optmz='distance')
+    
+    print(route_retriever.route.distance_unit)
+    print(route_retriever.route.duration_unit)
+    print(route_retriever.route.distance)
+    print(route_retriever.route.duration)
+    print(route_retriever.route.duration_traffic)
+    print(route_retriever.route.mode)
+    print(str(route_retriever.route.start_location))
+    print(str(route_retriever.route.end_location))
+    print(route_retriever.route.print_instructions)
+    
     text = json.dumps(json.loads(route_retriever._response.text), indent=2)
     with open(write_path + '.json', 'w') as f:
             f.write(text)
+            
+            
