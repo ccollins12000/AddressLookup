@@ -40,7 +40,7 @@ class RouteRetriever:
                 du (distanceUnit) (str): mi or km (specifies what unit the distance is returned in)
         
                 dt (dateTime) (str): Specifies the time to use for calculating the route Example: dateTime=03/01/2011 05:42:00
-                                Use with tt parameter
+                                Use with tt parameter. If only time component is giving, it is assumed to be current day
                 
                 tt (timeType) (str):
                     - Arrival: The dateTime parameter contains the desired arrival time for a transit request.
