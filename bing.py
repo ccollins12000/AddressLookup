@@ -18,13 +18,14 @@ class RouteRetriever:
         self.end_location = None
         self.route = None
 
-    def calculate_route(self, start_location, end_location, **kwargs):
+    def calculate_route(self, start_location, end_location, travelMode, **kwargs):
         """Finds the route between two address. Note this object is only setup to handle two waypoints.
         The _response attribute can be accessed to work with the raw response from bing for additional functionality
         
         Args:
             start_location (str): The address of the location to start at
             end_location (str): The address of the location to end at
+            travelMode (str): Specifies the mode od travel for the route. Can be Driving, Transit or Walking.
             
             See https://docs.microsoft.com/en-us/bingmaps/rest-services/routes/calculate-a-route
             for full list of additional parameters and details that can be passed to request. 
@@ -45,10 +46,8 @@ class RouteRetriever:
                     - Arrival: The dateTime parameter contains the desired arrival time for a transit request.
                     - Departure: The dateTime parameter contains the desired departure time for a transit request.
                     - LastAvailable: The dateTime parameter contains the latest departure time available for a transit request.
-                
-                travelMode (str): Specifies the mode od travel for the route. Can be Driving, Transit or Walking.
         """
-        search_api_url = 'http://dev.virtualearth.net/REST/v1/Routes'
+        search_api_url = 'http://dev.virtualearth.net/REST/v1/Routes/{travelMode}'.format(travelMode = travelMode)
         params = {'key': self._api_key, 
                   'wp.0':start_location, 
                   'wp.1':end_location
@@ -253,6 +252,7 @@ class AddressResult:
 
 
 if __name__ == "__main__":
+    #Testing the code:
     api_key = input('Enter the bing api key: ')
     write_path = input('Enter the output path ')
     
@@ -272,10 +272,10 @@ if __name__ == "__main__":
     print(geocoder.result.zip_code)
     print(geocoder.result.street_address)
     print(str(geocoder.result))
-    start = 'Saint Paul, MN'
-    end = 'Minneapolis, MN'
+    start = 'Mall of America'
+    end = 'Minneapolis Airport'
     route_retriever = RouteRetriever(api_key)
-    route_retriever.calculate_route(start, end, optmz='distance')
+    route_retriever.calculate_route(start, end, 'Driving', dt ='07:00:00',tt='Arrival')
     
     print(route_retriever.route.distance_unit)
     print(route_retriever.route.duration_unit)
