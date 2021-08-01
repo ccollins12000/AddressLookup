@@ -18,12 +18,13 @@ class RouteRetriever:
         self.end_location = None
         self.route = None
 
-    def calculate_route(self, start_location, end_location):
+    def calculate_route(self, start_location, end_location, **kwargs):
         """Finds the route between two address
         
         Args:
             start_location (str): The address of the location to start at
             end_location (str): The address of the location to end at
+            
         
         """
         search_api_url = 'http://dev.virtualearth.net/REST/v1/Routes'
@@ -31,6 +32,9 @@ class RouteRetriever:
                   'wp.0':start_location, 
                   'wp.1':end_location
                   }
+        if kwargs:
+            params.update(**kwargs)
+            
         self._response = self._session.get(search_api_url, params=params)
         
         #Parse Results
@@ -176,5 +180,5 @@ if __name__ == "__main__":
     start = 'Saint Paul, MN'
     end = 'Minneapolis, MN'
     route_retriever = RouteRetriever(api_key)
-    route_retriever.calculate_route(start, end)
+    route_retriever.calculate_route(start, end, optmz='distance')
     print(route_retriever._response.text)
