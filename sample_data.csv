@@ -1,0 +1,54 @@
+,0
+address1,Mall of America
+address2,Minneapolis Airport
+Driving1_Distance,4.813
+Driving1_Duration,730
+Driving1_Instructions,"(0.182) Depart and head north on E Broadway
+(0.088) Turn left onto NE Court
+(0.041) Bear right onto NE Court
+(0.631) Turn right onto Lindau Ln, then immediately turn left onto 24th Ave S / County Hwy-1
+(0.932) Take the ramp on the right and follow signs for I-494 East / MN-5 East
+(2.273) At Exit 1B, head right on the ramp for 34th Ave toward Terminal 2
+(0.318) Keep straight to get onto road
+(0.348) Turn left
+(0) Arrive at Minneapolis-St Paul International Airport, MN on the left
+"
+Driving1_Start,"Minneapolis-St Paul International Airport, MN"
+Driving1_End,"Mall of America, MN"
+Driving2_Distance,4.783
+Driving2_Duration,761
+Driving2_Instructions,"(0.122) Depart and head north on E Broadway
+(0.077) Turn right
+(0.079) Turn right
+(0.046) Turn left, then immediately turn right onto 24th Ave S / County Hwy-1
+(0.588) Turn left onto 24th Ave S / County Hwy-1, then immediately turn left onto 24th Ave S / County Hwy-1
+(0.932) Take the ramp on the right and follow signs for I-494 East / MN-5 East
+(2.273) At Exit 1B, head right on the ramp for 34th Ave toward Terminal 2
+(0.318) Keep straight to get onto road
+(0.348) Turn left
+(0) Arrive at Minneapolis-St Paul International Airport, MN on the left
+"
+Driving2_Start,"Minneapolis-St Paul International Airport, MN"
+Driving2_End,"Mall of America, MN"
+Walking_Distance,4.698
+Walking_Duration,3383
+Walking_Instructions,"(0.211) Depart and head north on E Broadway
+(0.008) Turn left
+(0.116) Turn right, then immediately turn right onto Lindau Ln
+(0.235) Turn left onto 24th Ave S / County Hwy-1
+(1.093) Bear right,  then bear right onto American Blvd E
+(2.369) Turn left onto 34th Ave S
+(0.318) Keep straight to get onto road
+(0.348) Turn left
+(0) Arrive at Minneapolis-St Paul International Airport, MN on the left
+"
+Walking_Start,"Minneapolis-St Paul International Airport, MN"
+Walking_End,"Mall of America, MN"
+Transit_Distance,5.325
+Transit_Duration,1585
+Transit_Instructions,"(0.159) Walk from Mall of America, MN to MOA Transit Station
+(3.791) inter-city rail: METRO Blue Line - to Mpls-Target Field
+(1.375) Walk from Terminal 2 Humphrey Station to Minneapolis-St Paul International Airport, MN
+"
+Transit_Start,"Minneapolis-St Paul International Airport, MN"
+Transit_End,"Mall of America, MN"

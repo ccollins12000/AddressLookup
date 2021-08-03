@@ -276,6 +276,8 @@ if __name__ == "__main__":
     end = 'Minneapolis Airport'
     route_retriever = RouteRetriever(api_key)
     route_retriever.calculate_route(start, end, 'Driving', dt ='07:00:00',tt='Arrival')
+    route_retriever.calculate_route(start, end, 'Driving', optmz = 'distance')
+    
     
     print(route_retriever.route.distance_unit)
     print(route_retriever.route.duration_unit)
